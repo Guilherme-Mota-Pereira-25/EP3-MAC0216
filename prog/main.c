@@ -7,7 +7,7 @@
 #include "libcsvreader.h"
 
 int main() {
-    float **planilha;
+    float planilha[1000][1000];
     char *caminho_dos_dados;
     int *linhas;
     int *colunas;
