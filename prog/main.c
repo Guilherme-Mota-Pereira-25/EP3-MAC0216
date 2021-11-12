@@ -9,9 +9,9 @@
 int main() {
     float planilha[1000][1000];
     char *caminho_dos_dados;
-    int *linhas;
-    int *colunas;
+    int linhas;
+    int colunas;
 
-    carrega_dados(caminho_dos_dados, linhas, colunas, planilha);
+    carrega_dados(caminho_dos_dados, &linhas, &colunas, planilha);
     return 0;
 }
