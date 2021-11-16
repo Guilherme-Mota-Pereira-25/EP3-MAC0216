@@ -1,13 +1,23 @@
-/* This file is the implementation of 
- * the csvlocal library.
+/* Esse arquivo é a implementação da
+ * biblioteca csv local 
 */
 
 #include <stdio.h>
 #include <errno.h>
 #include <stdlib.h>
 
+/* variável externa que contém o código do último 
+ * erro emitido pelo sistema operacional.
+*/
 extern int errno;
 
+/* Essa função recece um ponteiro para o arquivo 
+ * csv e passa posição atual de leitura para a 
+ * próxima célula.
+ * Ela retorna 0 se o último char lido for ','
+ * Ela retorna 1 se o última char lido for um '\n'
+ * Ela retorna -1 se, em algum momento, atingir o fim do arquivo
+*/
 int pula_celula(FILE *fp) {
     int fim_arq;
     char c = '*';
@@ -18,6 +28,13 @@ int pula_celula(FILE *fp) {
     return 0;
 }
 
+/* Essa função recebe um ponteiro para o arquivo csv
+ * e um ponteiro para a variável colunas. Ela guarda
+ * nessa variável, a quantidade de colunas da planilha 
+ * Ela retorna 0 se a operação for concluída sem problemas 
+ * Ela returna -1 se, em algum momento houve alguma 
+ * inconsistência no arquivo.
+*/
 int conta_colunas(FILE *fp, int *colunas) {
     int numero_colunas = 0;
     int fim_arq;
@@ -28,19 +45,39 @@ int conta_colunas(FILE *fp, int *colunas) {
     return 0; 
 }
 
+/* Essa função recece um ponteiro para o arquivo csv,
+ * a quantidade de colunas do csv, um ponteiro para
+ * a variável das linhas e uma matriz para os dados da
+ * planilha. Ela lê os dados do arquivo e guarda a 
+ * quantidade de linhas e os dados das planilha nas 
+ * suas respectivas variáveis.  
+ * Ela retorna 0 se a operação for concluída sem problemas 
+ * Ela returna -1 se, em algum momento houve alguma 
+ * inconsistência no arquivo.
+*/
 int cria_planilha(FILE *fp, float planilha[1000][1000], int *linhas, int colunas) {
     char c = '*';
     int numero_linhas = 0;
 
+    // Pula a primeira célula da linha que contém um nome
     while(pula_celula(fp) != -1) {
         int i;
         int fim_arq;
         for(i = 0; i < colunas; i++) {
+            /* Lê o próximo char. Sai do loop se for atingido o
+             * fim do arquivo
+            */
             if((fim_arq = fscanf(fp, "%c", &c)) == EOF) break;
+
+            // Célula vazia
             if(c == ',' || c == '\n') planilha[numero_linhas][i] = 0.0;
+
             else {
+                // Volta uma posicao no arquivo
                 fseek(fp, -1L, SEEK_CUR);
+                // Salva o valor
                 fscanf(fp, "%f", &planilha[numero_linhas][i]);
+                // Pula o próximo char ','
                 fseek(fp, 1L, SEEK_CUR);
             }
         }
@@ -66,7 +103,14 @@ void imprime_planilha(float planilha[1000][1000], int colunas, int linhas) {
     }
 }
 
-void tratamento_erro(char *mensagem, int codigo, int erro_so) {
+/* Essa função é auxilia no tratamento de erros da biblioteca.
+ * O primeiro valor recebido é um inteiro que, quando -1, indica
+ * a ocorrência do erro. São também recebidos uma mensagem para
+ * ser exibido quando há presença de erro e também um inteiro
+ * indicando se é um erro do sistema operacional, caso o for,
+ * mostra também a mensagem devolvida pelo SO.
+*/
+void tratamento_erro(int codigo, char *mensagem, int erro_so) {
     if(codigo == -1) {
         if(erro_so)
             perror(mensagem);
@@ -81,10 +125,10 @@ void carrega_dados (char *caminho_dos_dados, int *linhas, int *colunas, float pl
     FILE *fp;
     fp = fopen ("./csvtests/BRICS_MortalidadeInfantil.csv", "r");
     if (fp == NULL) {
-        tratamento_erro("Erro ao abrir arquivo", -1, 1);
+        tratamento_erro(-1, "Erro ao abrir arquivo", 1);
     }    
-    tratamento_erro("Erro ao criar a planilha. Formato inválido.", conta_colunas(fp, colunas), 0);
-    tratamento_erro("Erro ao criar a planilha. Formato inválido.", cria_planilha(fp, planilha, linhas, *colunas), 0);
+    tratamento_erro(conta_colunas(fp, colunas), "Erro ao criar a planilha. Formato inválido.", 0);
+    tratamento_erro(cria_planilha(fp, planilha, linhas, *colunas), "Erro ao criar a planilha. Formato inválido.", 0);
 
     //debug
     //printf("%d", *colunas);
