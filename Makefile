@@ -8,6 +8,12 @@ BINS= $(LPATH)libcsvexternalmain $(LPATH)libcsvlocalmain
 
 all: libcsvexternalmain libcsvlocalmain
 
+libcsv.o: $(LPATH)libcsv.c
+	$(CC) $(DYNAMIC) $(CFLAGS) $< -o $(LPATH)$@ -I$(IPATH)
+
+libcsv.so: libcsv.o $(IPATH) $(IPATH)libcsv.h
+	$(CC) -o $(LPATH)$@ -shared $(LPATH)$<
+
 # Creation of csvlocal library
 
 libcsvlocal.o: $(LPATH)libcsvlocal.c 
@@ -16,8 +22,8 @@ libcsvlocal.o: $(LPATH)libcsvlocal.c
 libcsvlocal.so: libcsvlocal.o $(IPATH)libcsvreader.h
 	$(CC) -o $(LPATH)$@ -shared $(LPATH)$<
 
-libcsvlocalmain: libcsvexternal.so libcsvlocal.so 
-	$(CC) $(CFLAGS) -o $(PPATH)main_local $(PPATH)main.c -I$(IPATH) -L$(LPATH) -lcsvlocal
+libcsvlocalmain: libcsvlocal.so libcsv.so
+	$(CC) $(CFLAGS) -o $(PPATH)main_local $(PPATH)main.c -I$(IPATH) -L$(LPATH) -lcsvlocal -lcsv
 
 # Creation of csvexternal library
 
@@ -27,7 +33,8 @@ libcsvexternal.o: $(LPATH)libcsvexternal.c
 libcsvexternal.so: libcsvexternal.o $(IPATH)libcsvreader.h
 	$(CC) -o $(LPATH)$@ -shared $(LPATH)$<
 
-libcsvexternalmain: libcsvexternal.so 
+libcsvexternalmain: libcsvexternal.so libcsv.so
 	$(CC) $(CFLAGS) -o $(PPATH)main_external $(PPATH)main.c -I$(IPATH) -L$(LPATH) -lcsvexternal -lcurl
+
 clean:
 	rm $(LPATH)*.o $(LPATH)*.so $(BINS)
