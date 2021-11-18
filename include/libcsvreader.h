@@ -2,4 +2,4 @@
  * and csvexternal libraries.
 */
 
-void carrega_dados (char *caminho_dos_dados, int *linhas, int *colunas, float planilha[1000][1000]);
+void carrega_dados (char *caminho_dos_dados, int *linhas, int *colunas, float planilha[1000][1000], char *nomes_linhas[1000]);
