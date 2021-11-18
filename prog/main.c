@@ -11,27 +11,24 @@
 int main(int argc, char *argv[]) {
 
     char *caminho_dos_dados = argv[1];
-    float **planilha;
-    int *linhas;
-    int *colunas;
+    char *titulo_do_grafico = argv[2];
+    char *rotulo_eixo_x = argv[3];
+    char *rotulo_eixo_y = argv[4];
+    char *nomes_linhas[] = {"Brazil", "China", "India", "Russian Federation", "South Africa"};
+    
+    float **planilha = NULL;
+    int *linhas = NULL;
+    int *colunas = NULL;
 
     carrega_dados(caminho_dos_dados, linhas, colunas, planilha);
 
     define_num_linhas(linhas);
     define_num_colunas(colunas);
-
     define_titulo(caminho_dos_dados);
-    define_rotulo_x("Ano");
-
-    // TODO: pegar o rótulo do eixo y a partir do caminho dos dados, visto que
-    // há um padrão no nome dos arquivos.
-    define_rotulo_y("");
-
-    // TODO: usar vetor com os titulos das linhas, guardado na biblioteca dinâmica.
-    // define_nomes_linhas();
-    
-    // TODO: terminar a função desenha_grafico.
-    // desenha_grafico();
+    define_rotulo_x(rotulo_eixo_x);
+    define_rotulo_y(rotulo_eixo_y);
+    define_nomes_linhas(nomes_linhas);
+    desenha_grafico(*linhas, *colunas, planilha);
 
     // TODO: desalocar memória das variáveis utilizadas.
 
