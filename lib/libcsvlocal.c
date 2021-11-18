@@ -123,7 +123,7 @@ void tratamento_erro(int codigo, char *mensagem, int erro_so) {
 
 void carrega_dados (char *caminho_dos_dados, int *linhas, int *colunas, float planilha[1000][1000]) {
     FILE *fp;
-    fp = fopen ("./csvtests/BRICS_MortalidadeInfantil.csv", "r");
+    fp = fopen (caminho_dos_dados, "r");
     if (fp == NULL) {
         tratamento_erro(-1, "Erro ao abrir arquivo", 1);
     }    
@@ -134,5 +134,6 @@ void carrega_dados (char *caminho_dos_dados, int *linhas, int *colunas, float pl
     //printf("%d", *colunas);
     //printf("%d", *linhas);
     //imprime_planilha(planilha, *colunas, *linhas);
+    printf("%d", *linhas);
     fclose(fp);
 }

@@ -28,7 +28,6 @@ libcsvexternal.so: libcsvexternal.o $(IPATH)libcsvreader.h
 	$(CC) -o $(LPATH)$@ -shared $(LPATH)$<
 
 libcsvexternalmain: libcsvexternal.so 
-	$(CC) $(CFLAGS) -o $(PPATH)main_external $(PPATH)main.c -I$(IPATH) -L$(LPATH) -lcsvexternal
-
+	$(CC) $(CFLAGS) -o $(PPATH)main_external $(PPATH)main.c -I$(IPATH) -L$(LPATH) -lcsvexternal -lcurl
 clean:
 	rm $(LPATH)*.o $(LPATH)*.so $(BINS)
