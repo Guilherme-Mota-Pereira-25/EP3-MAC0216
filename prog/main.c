@@ -17,18 +17,18 @@ int main(int argc, char *argv[]) {
     char *nomes_linhas[1000];
     
     float planilha[1000][1000];
-    int *linhas = NULL;
-    int *colunas = NULL;
+    int linhas;
+    int colunas;
 
-    carrega_dados(caminho_dos_dados, linhas, colunas, planilha, nomes_linhas);
+    carrega_dados(caminho_dos_dados, &linhas, &colunas, planilha, nomes_linhas);
 
     define_num_linhas(linhas);
     define_num_colunas(colunas);
-    define_titulo(caminho_dos_dados);
+    define_titulo(titulo_do_grafico);
     define_rotulo_x(rotulo_eixo_x);
     define_rotulo_y(rotulo_eixo_y);
     define_nomes_linhas(nomes_linhas);
-    desenha_grafico(*linhas, *colunas, planilha);
+    desenha_grafico(linhas, colunas, planilha);
 
     // TODO: desalocar memória das variáveis utilizadas.
 

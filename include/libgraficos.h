@@ -5,13 +5,13 @@
 * Uso: define_num_linhas(int*)
 * -----------------------------
 * Esta função define o número de linhas que o gráfico irá conter.*/
-void define_num_linhas(int *linhas);
+void define_num_linhas(int linhas);
 
 /* Função define_num_colunas:
 * Uso: define_num_colunas(int*)
 * -----------------------------
 * Esta função define o número de colunas que o gráfico irá conter.*/
-void define_num_colunas(int *colunas);
+void define_num_colunas(int colunas);
 
 /* Função define_titulo:
 * Uso: define_titulo(char*)

@@ -12,12 +12,12 @@ char *rotulo_y = NULL;
 char **titulos_linhas = NULL;
 int num_linhas, num_colunas, num_paises;
 
-void define_num_linhas(int *linhas) {
-    num_linhas = *linhas;
+void define_num_linhas(int linhas) {
+    num_linhas = linhas;
 }
 
-void define_num_colunas(int *colunas) {
-    num_colunas = *colunas;
+void define_num_colunas(int colunas) {
+    num_colunas = colunas;
 }
 
 void define_titulo (char *titulo) {
