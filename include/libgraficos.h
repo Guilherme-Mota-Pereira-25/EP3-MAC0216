@@ -6,13 +6,12 @@
 #include <string.h>
 #include <unistd.h>
 
-#define NUM_PAISES 5
-
 char *titulo_grafico = NULL;
 char *rotulo_x = NULL;
 char *rotulo_y = NULL;
 char **titulos_linhas = NULL;
-int num_linhas, num_colunas;
+char* titulos_linhas = NULL;
+int num_linhas, num_colunas, num_paises;
 
 //TODO: mudar funções auxiliares para arquivos .h e .c separados.
 
