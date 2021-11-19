@@ -1,0 +1,11 @@
+# Diretórios 
+csvtests/
+.vscode/
+
+# Por extensão
+*.o
+*.so
+
+# Binários
+main_external
+main_local
