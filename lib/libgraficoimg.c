@@ -95,12 +95,12 @@ void desenha_grafico (int linhas, int colunas, float planilha[][colunas]) {
         char* config_pais = "\"dados.dat\" using 1:";
 
         char coluna[1];
-        itoa(i+2,coluna,10); // convertendo i+2 de inteiro para string.
-                             // somamos dois, pois contamos a partir da
-                             // segunda coluna(1a contém os anos).
-
+        sprintf(coluna, "%d", i+2);// convertendo i+2 de inteiro para string.
+                                   // somamos dois, pois contamos a partir da
+                                   // segunda coluna(primeiraa contém os anos).
+        
         char cor[1];
-        itoa(i,cor,10); // convertendo i de inteiro para string.
+        sprintf(cor, "%d", i); // convertendo i de inteiro para string.
        
         strcat(config_pais, coluna);
         strcat(config_pais, " title ");
