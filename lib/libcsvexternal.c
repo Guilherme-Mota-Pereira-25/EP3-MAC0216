@@ -17,7 +17,6 @@ void carrega_dados (char *caminho_dos_dados, int *linhas, int *colunas, float pl
 
     CURL *curl;
     FILE *fp;
-    CURLcode res;
     char *url = "http://www.ime.usp.br/~kon/tmp/BRICS_PIBPerCapita.csv";
     char outfilename[FILENAME_MAX] = "/tmp/temporary.csv";
     curl = curl_easy_init();
@@ -27,7 +26,7 @@ void carrega_dados (char *caminho_dos_dados, int *linhas, int *colunas, float pl
         curl_easy_setopt(curl, CURLOPT_FOLLOWLOCATION, 1L);
         curl_easy_setopt(curl, CURLOPT_WRITEFUNCTION, write_data);
         curl_easy_setopt(curl, CURLOPT_WRITEDATA, fp);
-        res = curl_easy_perform(curl);
+        curl_easy_perform(curl);
         /* always cleanup */
         curl_easy_cleanup(curl); 
         fclose(fp);

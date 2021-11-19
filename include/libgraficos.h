@@ -1,18 +1,6 @@
 #ifndef _libgraficos_h
 #define _libgraficos_h
 
-/* Função define_num_linhas:
-* Uso: define_num_linhas(int*)
-* -----------------------------
-* Esta função define o número de linhas que o gráfico irá conter.*/
-void define_num_linhas(int linhas);
-
-/* Função define_num_colunas:
-* Uso: define_num_colunas(int*)
-* -----------------------------
-* Esta função define o número de colunas que o gráfico irá conter.*/
-void define_num_colunas(int colunas);
-
 /* Função define_titulo:
 * Uso: define_titulo(char*)
 * -----------------------------
@@ -30,12 +18,6 @@ void define_rotulo_x (char *nome);
 * -----------------------------
 * Esta função define o rótulo do eixo y do gráfico a ser analisado.*/
 void define_rotulo_y (char *nome);
-
-/* Função define_nome_linhas:
-* Uso: define_nomes_linhas(char*[])
-* -----------------------------
-* Esta função define o nome das linhas de um gráfico*/
-void define_nomes_linhas (char *nomes_linhas[]);
 
 /* Função desaloca_string:
 * Uso: desaloca_string(char*)
@@ -55,6 +37,6 @@ void desaloca_vetor_strings(char** strs);
 * -----------------------------
 * Esta função desenha o gráfico em um arquivo .png ou em formato de texto, na 
 * saída padrão.                                                                */
-void desenha_grafico (int linhas, int colunas, float planilha[][colunas]);
+void desenha_grafico (int linhas, int colunas, float planilha[1000][1000], char *nomes_linhas[1000]);
 
 #endif

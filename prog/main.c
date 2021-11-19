@@ -22,15 +22,11 @@ int main(int argc, char *argv[]) {
 
     carrega_dados(caminho_dos_dados, &linhas, &colunas, planilha, nomes_linhas);
 
-    define_num_linhas(linhas);
-    define_num_colunas(colunas);
     define_titulo(titulo_do_grafico);
     define_rotulo_x(rotulo_eixo_x);
     define_rotulo_y(rotulo_eixo_y);
-    define_nomes_linhas(nomes_linhas);
-    desenha_grafico(linhas, colunas, planilha);
+    desenha_grafico(linhas, colunas, planilha, nomes_linhas);
 
-    // TODO: desalocar memória das variáveis utilizadas.
 
     return 0;
 }

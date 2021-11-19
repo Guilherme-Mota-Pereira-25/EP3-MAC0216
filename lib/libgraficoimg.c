@@ -9,16 +9,6 @@
 char *titulo_grafico = NULL;
 char *rotulo_x = NULL;
 char *rotulo_y = NULL;
-char **titulos_linhas = NULL;
-int num_linhas, num_colunas, num_paises;
-
-void define_num_linhas(int linhas) {
-    num_linhas = linhas;
-}
-
-void define_num_colunas(int colunas) {
-    num_colunas = colunas;
-}
 
 void define_titulo (char *titulo) {
     titulo_grafico = titulo;
@@ -38,16 +28,6 @@ void define_rotulo_y (char *nome) {
     strcpy(rotulo_y, nome);
 }
 
-void define_nomes_linhas (char *nomes_linhas[]) {
-    num_paises = num_linhas-1; // excluindo a linha que contém os anos.
-    titulos_linhas = (char**) malloc(num_paises*sizeof(char*));
-    for (int i = 0; i < num_paises; i++) {
-        int num_caracteres = strlen(nomes_linhas[i]) + 1;
-        titulos_linhas[i] = (char*) malloc(num_caracteres*sizeof(char));
-        strcpy(titulos_linhas[i],nomes_linhas[i]);
-    }   
-}
-
 void desaloca_string(char* str) {
     free(str);
     str = NULL;
@@ -62,82 +42,70 @@ void desaloca_vetor_strings(char** strs, int num_strings) {
     strs = NULL;
 }
 
-void desenha_grafico (int linhas, int colunas, float planilha[1000][1000]) {
+void escreve_dados(FILE* dados, float planilha[1000][1000], int colunas, int linhas) {
+    for (int j = 0; j < colunas; j++) {
+        for (int i = 0; i < linhas; i++) {
+            fprintf(dados, "%f ", planilha[i][j]);
+        }
+        fprintf(dados, "\n");
+    }
+}
+
+void escreve_parametro(FILE* specs, char *parametro, char* nome_parametro) {
+    char spec_gnuplot[100];
+    strcpy(spec_gnuplot, "set ");
+    strcat(spec_gnuplot, parametro);
+    strcat(spec_gnuplot, " \'");
+    strcat(spec_gnuplot, nome_parametro);
+    strcat(spec_gnuplot, "\'\n");
+    fprintf(specs, "%s", spec_gnuplot);
+}
+
+void escreve_specs(FILE* specs, int linhas, char *nomes_linhas[1000]) {
+    // Seta a saida
+    fprintf(specs, "set term png size 800,400\n");
+    fprintf(specs, "set output \'graph.png\'\n");
+    fprintf(specs, "set datafile missing \'-1.000000\'\n");
+    fprintf(specs, "set key outside\n");
+
+    escreve_parametro(specs, "title", titulo_grafico);
+    escreve_parametro(specs, "xlabel", rotulo_x);
+    escreve_parametro(specs, "ylabel", rotulo_y);
+    
+    fprintf(specs, "plot ");
+    for(int i = 2; i < linhas+1; i++) {
+        fprintf(specs, "\'/tmp/dados.dat\' using 1:%d title \'%s\'", i, nomes_linhas[i-2]);
+        if(i != linhas+1) fprintf(specs, ", ");
+    }
+    fprintf(specs, "\n");
+}
+
+void desenha_grafico (int linhas, int colunas, float planilha[1000][1000], char *nomes_linhas[1000]) {
 
     // Primeiramente, vamos montar um arquivo com os dados na formatação cor-
     // reta para poder ser processado pelo gnuplot.
-    FILE* dados_formatados = fopen("/tmp/dados.dat", "w");
-    if(dados_formatados == NULL) {
-        printf("Erro ao abrir .dat");
+    FILE* dados = fopen("/tmp/dados.dat", "w");
+    if(dados == NULL) {
+        printf("Erro ao criar .dat");
+        exit(1);
+    }
+
+    escreve_dados(dados, planilha, colunas, linhas);
+
+    FILE* specs = fopen("/tmp/specs.plg", "w");
+    if(specs == NULL) {
+        printf("Erro ao criar script_plot.plg");
         exit(1);
     }
     
-    for (int j = 0; j < num_colunas; j++) {
-        for (int i = 0; i < num_linhas; i++) {
-            fprintf(dados_formatados,"%f ", planilha[i][j]);
-        }
-        fprintf(dados_formatados, "\n");
-    }
+    escreve_specs(specs, linhas, nomes_linhas);
 
-    char comando_setar_titulo[100];
-    strcpy(comando_setar_titulo, "set title ");
-    strcat(comando_setar_titulo, titulo_grafico);
+    fclose(dados);
+    fclose(specs);
 
-    char comando_setar_saida[50];
-    strcpy(comando_setar_saida, "set output \"grafico.png\"");
+    char* argument_list[] = {"gnuplot", "/tmp/specs.plg", NULL};
+    execvp("gnuplot", argument_list);
+    perror("gnuplot");
 
-    char comando_setar_rotulo_x[100];
-    strcpy(comando_setar_rotulo_x, "set xlabel ");
-    strcat(comando_setar_rotulo_x, rotulo_x);
-    
-    char comando_setar_rotulo_y[100];
-    strcpy(comando_setar_rotulo_y, "set ylabel ");
-    strcat(comando_setar_rotulo_y, rotulo_y);
-
-    char comando_plotar[2000];
-    strcpy(comando_plotar, "plot ");
-
-    for (int i = 0; i < num_paises; i++) {
-        char config_pais[200];
-        strcpy(config_pais, "\"dados.dat\" using 1:");
-
-        char coluna[2];
-        sprintf(coluna, "%d", i+2);// convertendo i+2 de inteiro para string.
-                                   // somamos dois, pois contamos a partir da
-                                   // segunda coluna(primeiraa contém os anos).
-        
-        char cor[2];
-        sprintf(cor, "%d", i); // convertendo i de inteiro para string.
-       
-        strcat(config_pais, coluna);
-        strcat(config_pais, " title ");
-        strcat(config_pais, titulos_linhas[i]);
-        strcat(config_pais, " linetype 7 linecolor ");
-        strcat(config_pais, cor);
-        strcat(config_pais, " with linespoints");
-
-        if (i != num_paises-1) strcat(config_pais, ",");
-
-        strcat(comando_plotar, config_pais);
-    }
-
-    char* comandos_gnu[] = { comando_setar_titulo, 
-                             comando_setar_saida,
-                             comando_setar_rotulo_x,
-                             comando_setar_rotulo_y,
-                             comando_plotar
-                            };
-    
-    execvp("/usr/bin/gnuplot", comandos_gnu);
-    perror("execvp");
-
-    fclose(dados_formatados);
-
-    // Como já realizamos a tarefa desejada, vamos, agora, desalocar toda a 
-    // memória alocada para as variáveis declaradas ao início do arquivo.
-    /*desaloca_string(titulo_grafico);
-    desaloca_string(rotulo_x);
-    desaloca_string(rotulo_y);
-    desaloca_vetor_strings(titulos_linhas, num_paises);*/
 }
 
