@@ -6,7 +6,7 @@ A diretório "include" contém as interfaces das bibliotecas O diretório "lib" 
 
 Para compilar e criar os executáveis, rodar:
 
-`export LD_LIBRARY_PATH=./lib 
+`export LD_LIBRARY_PATH=.`
 
 `make`
 
