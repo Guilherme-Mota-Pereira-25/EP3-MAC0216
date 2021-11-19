@@ -1,7 +1,16 @@
-#include "../include/libgraficos.h"
+#include <stdlib.h>
+#include <stdio.h>
+#include <string.h>
+#include <unistd.h>
 
 //TODO: mudar funções auxiliares para arquivos .h e .c separados.
 //TODO: comentar as funções a seguir.
+
+char *titulo_grafico = NULL;
+char *rotulo_x = NULL;
+char *rotulo_y = NULL;
+char **titulos_linhas = NULL;
+int num_linhas, num_colunas, num_paises;
 
 void define_num_linhas(int *linhas) {
     num_linhas = *linhas;
@@ -35,17 +44,15 @@ void define_nomes_linhas (char *nomes_linhas[]) {
     for (int i = 0; i < num_paises; i++) {
         int num_caracteres = strlen(nomes_linhas[i]) + 1;
         titulos_linhas[i] = (char*) malloc(num_caracteres*sizeof(char));
-        strcopy(titulos_linhas[i],nomes_linhas[i]);
+        strcpy(titulos_linhas[i],nomes_linhas[i]);
     }   
 }
 
 void desenha_grafico (int linhas, int colunas, float planilha[][colunas]) {
 
-    const int num_comandos = 5;
-
     // Primeiramente, vamos montar um arquivo com os dados na formatação cor-
     // reta para poder ser processado pelo gnuplot.
-    FILE* dados_formatados = fopen("/tmp/dados.dat", 'w');
+    FILE* dados_formatados = fopen("/tmp/dados.dat", "w");
     
     for (int j = 0; j < num_colunas; j++) {
         for (int i = 0; i < num_linhas; i++) {
@@ -55,7 +62,7 @@ void desenha_grafico (int linhas, int colunas, float planilha[][colunas]) {
     }
 
     // Agora vamos montar o arquivo com os comandos do gnuplot a serem executados.
-    FILE* especific_gnu = fopen("/tmp/especific_gnu.", 'w');
+    FILE* especific_gnu = fopen("/tmp/especific_gnu.", "w");
 
     char* comando_setar_titulo = "set title ";
     strcat(comando_setar_titulo, titulo_grafico);
@@ -72,8 +79,14 @@ void desenha_grafico (int linhas, int colunas, float planilha[][colunas]) {
 
     for (int i = 0; i < num_paises; i++) {
         char* config_pais = "\"dados.dat\" using 1:";
-        char* coluna = itoa(i+2); // contamos a partir da segunda (1a contém os anos).
-        char* cor = itoa(i);
+
+        char coluna[1];
+        itoa(i+2,coluna,10); // convertendo i+2 de inteiro para string.
+                             // somamos dois, pois contamos a partir da
+                             // segunda coluna(1a contém os anos).
+
+        char cor[1];
+        itoa(i,cor,10); // convertendo i de inteiro para string.
        
         strcat(config_pais, coluna);
         strcat(config_pais, " title ");
@@ -84,20 +97,8 @@ void desenha_grafico (int linhas, int colunas, float planilha[][colunas]) {
 
         if (i != num_paises-1) strcat(config_pais, ",");
 
-        strcat(comando_plotar, config_pais[i]);
+        strcat(comando_plotar, config_pais);
     }
-
-    //char* config_plot_brasil     = "\"dados.dat\" using 1:2 title \"Brazil\" linetype 7 linecolor \"green\" with linespoints,";
-    //char* config_plot_china      = "\"dados.dat\" using 1:3 title \"China\" linetype 7 linecolor \"red\" with linespoints,";
-    //char* config_plot_india      = "\"dados.dat\" using 1:4 title \"India\" linetype 7 linecolor \"#FF5733\" with linespoints,";
-    //char* config_plot_russia     = "\"dados.dat\" using 1:5 title \"Russian Federation\" linetype 7 linecolor \"blue\" with linespoints,";
-    //char* config_plot_africa_sul = "\"dados.dat\" using 1:6 title \"South Africa\" linetype 7 linecolor 0 with linespoints";
-
-    //char* configs_plot[] = {config_plot_brasil, config_plot_china, config_plot_india, config_plot_russia, config_plot_africa_sul};
-
-    //for (int i = 0; i < NUM_PAISES; i++) {
-    //   strcat(comando_plotar, configs_plot[i]);
-    //}
 
     char* comandos_gnu[] = { comando_setar_titulo, 
                              comando_setar_saida,
