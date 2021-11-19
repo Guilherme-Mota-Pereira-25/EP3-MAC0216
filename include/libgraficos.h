@@ -37,6 +37,19 @@ void define_rotulo_y (char *nome);
 * Esta função define o nome das linhas de um gráfico*/
 void define_nomes_linhas (char *nomes_linhas[]);
 
+/* Função desaloca_string:
+* Uso: desaloca_string(char*)
+* -----------------------------
+* Esta função desaloca a memória alocada para a string passada como parâmetro. */
+void desaloca_string(char* str);
+
+/* Função desaloca_vetor_strings:
+* Uso: desaloca_vetor_strings(char**)
+* -----------------------------
+* Esta função desaloca a memória alocada para o vetor de strings passado como
+* parâmetro.                                                                   */
+void desaloca_vetor_strings(char** strs);
+
 /* Função desenha_grafico:
 * Uso: desenha_grafico(int, int, float**)
 * -----------------------------

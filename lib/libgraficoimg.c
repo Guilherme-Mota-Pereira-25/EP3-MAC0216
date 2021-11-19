@@ -48,6 +48,20 @@ void define_nomes_linhas (char *nomes_linhas[]) {
     }   
 }
 
+void desaloca_string(char* str) {
+    free(str);
+    str = NULL;
+}
+
+void desaloca_vetor_strings(char** strs, int num_strings) {
+    for (int i = 0; i < num_strings; i++) {
+        free(strs[i]);
+        strs[i] = NULL;
+    }
+    free(strs);
+    strs = NULL;
+}
+
 void desenha_grafico (int linhas, int colunas, float planilha[][colunas]) {
 
     // Primeiramente, vamos montar um arquivo com os dados na formatação cor-
@@ -111,5 +125,12 @@ void desenha_grafico (int linhas, int colunas, float planilha[][colunas]) {
 
     fclose(dados_formatados);
     fclose(especific_gnu);
+
+    // Como já realizamos a tarefa desejada, vamos, agora, desalocar toda a 
+    // memória alocada para as variáveis declaradas ao início do arquivo.
+    desaloca_string(titulo_grafico);
+    desaloca_string(rotulo_x);
+    desaloca_string(rotulo_y);
+    desaloca_vetor_strings(titulos_linhas, num_paises);
 }
 
