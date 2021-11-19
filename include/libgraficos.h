@@ -53,7 +53,8 @@ void desaloca_vetor_strings(char** strs);
 /* Função desenha_grafico:
 * Uso: desenha_grafico(int, int, float**)
 * -----------------------------
-* Esta função desenha o gráfico*/
+* Esta função desenha o gráfico em um arquivo .png ou em formato de texto, na 
+* saída padrão.                                                                */
 void desenha_grafico (int linhas, int colunas, float planilha[][colunas]);
 
 #endif
