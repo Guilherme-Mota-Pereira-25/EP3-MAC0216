@@ -15,7 +15,7 @@ int main(int argc, char *argv[]) {
     char *rotulo_eixo_x = argv[3];
     char *rotulo_eixo_y = argv[4];
     char *nomes_linhas[1000];
-   
+    
     float planilha[1000][1000];
     int *linhas = NULL;
     int *colunas = NULL;

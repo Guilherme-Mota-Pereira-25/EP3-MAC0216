@@ -15,10 +15,10 @@ void carrega_dados (char *caminho_dos_dados, int *linhas, int *colunas, float pl
     tratamento_erro(conta_colunas(fp, colunas, planilha), "Erro ao criar a planilha. Formato inválido.", 0);
     tratamento_erro(cria_planilha(fp, planilha, linhas, *colunas, nomes_linhas), "Erro ao criar a planilha. Formato inválido.", 0);
 
-    /*debug
-    printf("colunas: %d", *colunas);
+    //debug
+    /*printf("colunas: %d", *colunas);
     printf(" linhas: %d\n", *linhas);
     imprime_planilha(planilha, *colunas, *linhas);
-    imprime_nomes(nomes_linhas, *linhas); */
+    imprime_nomes(nomes_linhas, *linhas);*/
     fclose(fp);
 }

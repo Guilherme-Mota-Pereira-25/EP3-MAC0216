@@ -38,5 +38,21 @@ libcsvexternal.so: libcsvexternal.o $(IPATH)libcsvreader.h
 libcsvexternalmain: libcsvexternal.so libcsv.so
 	$(CC) $(CFLAGS) -o $(PPATH)main_external $(PPATH)main.c -I$(IPATH) -L. -lcsvexternal -lcsv -lcurl
 
+# Criação da libgraficoimg
+
+libgraficoimg.o: $(LPATH)libgraficoimg.c 
+	$(CC) -c $(CFLAGS) $< -o $@ -I$(IPATH)
+
+libgraficoimg.a: libgraficoimg.o $(IPATH)libgraficos.h 
+	ar -rcv $@ $< 
+
+# Binarios csv + graficos
+
+libextimg: libgraficoimg.a libcsvexternal.so libcsv.so
+	$(CC) $(CFLAGS) -o $(PPATH)main_ext_img $(PPATH)main.c -I$(IPATH) -L. -lgraficoimg -lcsvexternal -lcsv -lcurl 
+
+liblocalimg: libgraficoimg.a libcsvlocal.so libcsv.so
+	$(CC) $(CFLAGS) -o $(PPATH)main_local_img $(PPATH)main.c -I$(IPATH)  -L. -lgraficoimg -lcsvlocal -lcsv 
+
 clean:
-	rm *.o *.so $(BINS)
+	rm *.o *.so *.a $(BINS)
