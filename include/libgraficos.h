@@ -1,20 +1,6 @@
 #ifndef _libgraficos_h
 #define _libgraficos_h
 
-#include <stdlib.h>
-#include <stdio.h>
-#include <string.h>
-#include <unistd.h>
-
-char *titulo_grafico = NULL;
-char *rotulo_x = NULL;
-char *rotulo_y = NULL;
-char **titulos_linhas = NULL;
-char* titulos_linhas = NULL;
-int num_linhas, num_colunas, num_paises;
-
-//TODO: mudar funções auxiliares para arquivos .h e .c separados.
-
 /* Função define_num_linhas:
 * Uso: define_num_linhas(int*)
 * -----------------------------
