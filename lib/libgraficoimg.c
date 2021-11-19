@@ -62,11 +62,15 @@ void desaloca_vetor_strings(char** strs, int num_strings) {
     strs = NULL;
 }
 
-void desenha_grafico (int linhas, int colunas, float planilha[][colunas]) {
+void desenha_grafico (int linhas, int colunas, float planilha[1000][1000]) {
 
     // Primeiramente, vamos montar um arquivo com os dados na formatação cor-
     // reta para poder ser processado pelo gnuplot.
     FILE* dados_formatados = fopen("/tmp/dados.dat", "w");
+    if(dados_formatados == NULL) {
+        printf("Erro ao abrir .dat");
+        exit(1);
+    }
     
     for (int j = 0; j < num_colunas; j++) {
         for (int i = 0; i < num_linhas; i++) {
@@ -75,24 +79,27 @@ void desenha_grafico (int linhas, int colunas, float planilha[][colunas]) {
         fprintf(dados_formatados, "\n");
     }
 
-    // Agora vamos montar o arquivo com os comandos do gnuplot a serem executados.
-    FILE* especific_gnu = fopen("/tmp/especific_gnu.", "w");
-
-    char* comando_setar_titulo = "set title ";
+    char comando_setar_titulo[100];
+    strcpy(comando_setar_titulo, "set title ");
     strcat(comando_setar_titulo, titulo_grafico);
 
-    char* comando_setar_saida = "set output \"grafico.png\"";
+    char comando_setar_saida[50];
+    strcpy(comando_setar_saida, "set output \"grafico.png\"");
 
-    char* comando_setar_rotulo_x = "set xlabel ";
+    char comando_setar_rotulo_x[100];
+    strcpy(comando_setar_rotulo_x, "set xlabel ");
     strcat(comando_setar_rotulo_x, rotulo_x);
     
-    char* comando_setar_rotulo_y = "set ylabel ";
+    char comando_setar_rotulo_y[100];
+    strcpy(comando_setar_rotulo_y, "set ylabel ");
     strcat(comando_setar_rotulo_y, rotulo_y);
 
-    char* comando_plotar = "plot ";
+    char comando_plotar[2000];
+    strcpy(comando_plotar, "plot ");
 
     for (int i = 0; i < num_paises; i++) {
-        char* config_pais = "\"dados.dat\" using 1:";
+        char config_pais[200];
+        strcpy(config_pais, "\"dados.dat\" using 1:");
 
         char coluna[2];
         sprintf(coluna, "%d", i+2);// convertendo i+2 de inteiro para string.
@@ -122,15 +129,15 @@ void desenha_grafico (int linhas, int colunas, float planilha[][colunas]) {
                             };
     
     execvp("/usr/bin/gnuplot", comandos_gnu);
+    perror("execvp");
 
     fclose(dados_formatados);
-    fclose(especific_gnu);
 
     // Como já realizamos a tarefa desejada, vamos, agora, desalocar toda a 
     // memória alocada para as variáveis declaradas ao início do arquivo.
-    desaloca_string(titulo_grafico);
+    /*desaloca_string(titulo_grafico);
     desaloca_string(rotulo_x);
     desaloca_string(rotulo_y);
-    desaloca_vetor_strings(titulos_linhas, num_paises);
+    desaloca_vetor_strings(titulos_linhas, num_paises);*/
 }
 
