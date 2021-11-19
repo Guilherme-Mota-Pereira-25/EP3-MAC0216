@@ -30,15 +30,15 @@ void define_rotulo_y (char *nome) {
 }
 
 void define_nomes_linhas (char *nomes_linhas[]) {
-    titulos_linhas = (char**) malloc(num_linhas*sizeof(char*));
-    for (int i = 0; i < num_linhas; i++) {
+    num_paises = num_linhas-1; // excluindo a linha que contém os anos.
+    titulos_linhas = (char**) malloc(num_paises*sizeof(char*));
+    for (int i = 0; i < num_paises; i++) {
         int num_caracteres = strlen(nomes_linhas[i]) + 1;
         titulos_linhas[i] = (char*) malloc(num_caracteres*sizeof(char));
         strcopy(titulos_linhas[i],nomes_linhas[i]);
     }   
 }
 
-// TODO: terminar função desenha_grafico.
 void desenha_grafico (int linhas, int colunas, float planilha[][colunas]) {
 
     const int num_comandos = 5;
@@ -70,17 +70,34 @@ void desenha_grafico (int linhas, int colunas, float planilha[][colunas]) {
 
     char* comando_plotar = "plot ";
 
-    char* config_plot_brasil     = "\"dados.dat\" using 1:2 title \"Brazil\" linetype 7 linecolor \"green\" with linespoints,";
-    char* config_plot_china      = "\"dados.dat\" using 1:3 title \"China\" linetype 7 linecolor \"red\" with linespoints,";
-    char* config_plot_india      = "\"dados.dat\" using 1:4 title \"India\" linetype 7 linecolor \"#FF5733\" with linespoints,";
-    char* config_plot_russia     = "\"dados.dat\" using 1:5 title \"Russian Federation\" linetype 7 linecolor \"blue\" with linespoints,";
-    char* config_plot_africa_sul = "\"dados.dat\" using 1:6 title \"South Africa\" linetype 7 linecolor 0 with linespoints";
+    for (int i = 0; i < num_paises; i++) {
+        char* config_pais = "\"dados.dat\" using 1:";
+        char* coluna = itoa(i+2); // contamos a partir da segunda (1a contém os anos).
+        char* cor = itoa(i);
+       
+        strcat(config_pais, coluna);
+        strcat(config_pais, " title ");
+        strcat(config_pais, titulos_linhas[i]);
+        strcat(config_pais, " linetype 7 linecolor ");
+        strcat(config_pais, cor);
+        strcat(config_pais, " with linespoints");
 
-    char* configs_plot[] = {config_plot_brasil, config_plot_china, config_plot_india, config_plot_russia, config_plot_africa_sul};
+        if (i != num_paises-1) strcat(config_pais, ",");
 
-    for (int i = 0; i < NUM_PAISES; i++) {
-        strcat(comando_plotar, configs_plot[i]);
+        strcat(comando_plotar, config_pais[i]);
     }
+
+    //char* config_plot_brasil     = "\"dados.dat\" using 1:2 title \"Brazil\" linetype 7 linecolor \"green\" with linespoints,";
+    //char* config_plot_china      = "\"dados.dat\" using 1:3 title \"China\" linetype 7 linecolor \"red\" with linespoints,";
+    //char* config_plot_india      = "\"dados.dat\" using 1:4 title \"India\" linetype 7 linecolor \"#FF5733\" with linespoints,";
+    //char* config_plot_russia     = "\"dados.dat\" using 1:5 title \"Russian Federation\" linetype 7 linecolor \"blue\" with linespoints,";
+    //char* config_plot_africa_sul = "\"dados.dat\" using 1:6 title \"South Africa\" linetype 7 linecolor 0 with linespoints";
+
+    //char* configs_plot[] = {config_plot_brasil, config_plot_china, config_plot_india, config_plot_russia, config_plot_africa_sul};
+
+    //for (int i = 0; i < NUM_PAISES; i++) {
+    //   strcat(comando_plotar, configs_plot[i]);
+    //}
 
     char* comandos_gnu[] = { comando_setar_titulo, 
                              comando_setar_saida,
@@ -89,14 +106,9 @@ void desenha_grafico (int linhas, int colunas, float planilha[][colunas]) {
                              comando_plotar
                             };
     
-    for (int i = 0; i < num_comandos; i++) {
-        fprintf(especific_gnu, comandos_gnu[i]);
-        fprintf(especific_gnu, "\n");
-    }
-
-    // TODO: executar comandos do gnuplot com a função execvp, para montar o gráfico.
-    // execvp();
+    execvp("/usr/bin/gnuplot", comandos_gnu);
 
     fclose(dados_formatados);
     fclose(especific_gnu);
 }
+
